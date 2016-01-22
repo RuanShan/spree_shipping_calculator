@@ -2,10 +2,10 @@ require_dependency 'spree/shipping_calculator'
 
 module Spree
   module Calculator::Shipping
-    class WeightBasedOrder < ShippingCalculator
+    class ZoneWeightBasedOrder < ShippingCalculator
       has_many :rates,
                -> { order("from_value ASC") },
-               class_name: 'Spree::WeightBasedCalculatorRate',
+               class_name: 'Spree::ZoneWeightBasedCalculatorRate',
                foreign_key: :calculator_id,
                dependent: :destroy
 
@@ -27,14 +27,14 @@ module Spree
         return 0 if package.contents.empty?
 
         total_weight = total_weight(content_items)
-        cost = get_rate(total_weight)
+        cost = get_rate_by_weight_and_ship_address( total_weight, package.order.ship_address )
 
         cost.to_f
       end
 
-      def available?(package)
-        package.contents.any? && Spree::WeightBasedCalculatorRate.for_calculator(id).size > 0
-      end
+      #def available?(package)
+      #  package.contents.any? && Spree::WeightBasedCalculatorRate.for_calculator(id).size > 0
+      #end
 
       def self.register
         super
@@ -56,8 +56,8 @@ module Spree
       end
 
       # Get the rate from the database or nil if could not find the rate
-      def get_rate(value)
-        Spree::WeightBasedCalculatorRate.find_rate(id, value)
+      def get_rate_by_weight_and_ship_address(weight, ship_address)
+        Spree::ZoneWeightBasedCalculatorRate.find_rate(id, value)
       end
 
       def validate_at_least_one_rate
@@ -68,6 +68,7 @@ module Spree
         new_or_existing_rates = rates.reject { |r| r.marked_for_destruction? }
         errors.add(:rates, Spree.t('errors.weight_based_shipping_must_be_unique'))  if new_or_existing_rates.map(&:from_value).uniq.size < new_or_existing_rates.size
       end
+
     end
   end
 end

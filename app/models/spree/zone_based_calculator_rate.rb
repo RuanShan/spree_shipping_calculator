@@ -1,6 +1,6 @@
 module Spree
-  class ZoneBasedCalculatorRate < ActiveRecord::Base
-    belongs_to :calculator, class_name: 'Spree::Calculator::Shipping::ZoneBasedOrder'
+  class ZoneWeightBasedCalculatorRate < ActiveRecord::Base
+    belongs_to :calculator, class_name: 'Spree::Calculator::Shipping::ZoneWeightBasedOrder'
 
     scope :for_calculator, -> (calculator_id) { where(calculator_id: calculator_id) }
     scope :for_value, -> (value) { where("from_value <= ?", value) }
@@ -11,7 +11,7 @@ module Spree
 
 
     # Find the rate for the specified value
-    def self.find_rate(calculator_id, value)
+    def self.find_rate(calculator_id, weight, ship_address)
       range = for_calculator(calculator_id).for_value(value).order("from_value DESC").first
       range && range.rate
     end

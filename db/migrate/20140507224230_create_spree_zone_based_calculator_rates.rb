@@ -1,8 +1,8 @@
 class CreateSpreeZoneBasedCalculatorRates < ActiveRecord::Migration
   def change
-    create_table :spree_zone_based_calculator_rates do |t|
+    create_table :spree_zone_weight_based_calculator_rates do |t|
       t.belongs_to :calculator
-      t.belongs_to :shipping_method_zone
+      t.belongs_to :zone
       t.decimal :first_weight,        null: false, precision: 8, scale: 3, default: 0.0
       t.decimal :first_rate,          null: false, precision: 8, scale: 2, default: 0.0
       t.decimal :additional_weight,        null: false, precision: 8, scale: 3, default: 0.0
