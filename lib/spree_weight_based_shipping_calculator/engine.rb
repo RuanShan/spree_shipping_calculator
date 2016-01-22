@@ -18,7 +18,7 @@ module SpreeWeightBasedShippingCalculator
     end
 
     initializer 'spree.register.calculators.weight_based_shipping', after: 'spree.register.calculators' do |app|
-      app.config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::WeightBasedOrder
+      app.config.spree.calculators.shipping_methods << Spree::Calculator::Shipping::ZoneWeightBasedOrder
     end
 
     config.to_prepare &method(:activate).to_proc
